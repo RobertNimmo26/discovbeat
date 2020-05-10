@@ -1,0 +1,40 @@
+{% extends 'discovbeat/base.html' %}
+{% load static %}
+
+{% block navbar %}
+    <li class="nav-item">
+        <a href="{% url 'logout' %}" class="nav-link">Log out</a>
+    </li>
+{% endblock %}
+
+{% block bodyblock %}
+    <div class="container mt-5">
+
+        <div class="row pt-3">
+            <div class="col-md-6">
+                <h2>Shared playlist library</h2>
+                <p>You have not been shared any playlists yet :o</p>
+            </div>
+            <div class="col-md-6">
+                <h2>Your shared playlists</h2>
+                <p>You have not shared any playlist yet to your friends</p> 
+            </div>
+        </div>
+
+        <div class="row pt-2 pb-4">
+            <div class="col-md">
+                <h2>Share a playlist</h2>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Your playlists
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

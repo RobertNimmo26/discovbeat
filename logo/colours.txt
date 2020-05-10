@@ -1,0 +1,9 @@
+https://coolors.co/ffffff-bd6c79-353c54-0c1821-000000
+
+Dominant colour:
+HTML/HEX code:	#bd6c79	
+RGB code:	rgb(189, 108, 121)
+
+Second colour:
+HTML/HEX code:	#353c54	
+RGB code:	rgb(53, 60, 84)

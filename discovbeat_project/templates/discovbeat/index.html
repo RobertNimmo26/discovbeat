@@ -1,0 +1,95 @@
+{% extends 'discovbeat/base.html' %}
+{% load static %}
+
+{%block headblock%}
+    <link rel='stylesheet' href="{% static 'css/indexCSS.css' %}">
+    <script src="https://kit.fontawesome.com/d3c4cf8724.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+{%endblock%}
+
+{% block navbar %}
+    <li class="nav-item">
+        <a class="nav-link" href="#">Log In</a>
+    </li>
+{% endblock %}
+
+{% block bodyblock%}
+    <header class="masthead text-center">
+        <div class="masthead-content">
+            <div class="container">
+                <img src="{%static 'images/logo.png'%}" alt="Logo">
+                <br><br>
+                <h2 class="masthead-subheading mb-0 h-teko">Explore new music with your friends!</h2>
+                <a href="{% url "social:begin" "spotify" %}" class="btn btn-primary btn-xl rounded-pill mt-5">Sign up here</a>
+                {% comment %} <a href="#" class="btn btn-primary btn-xl rounded-pill mt-5">Log in using Spotify   <i class="fab fa-spotify w3-xlarge"></i></a> {% endcomment %}
+               
+            </div>
+        </div>
+        <div class="bg-circle-1 bg-circle"></div>
+        <div class="bg-circle-2 bg-circle"></div>
+        <div class="bg-circle-3 bg-circle"></div>
+        <div class="bg-circle-4 bg-circle"></div>
+    </header>
+
+    <div class="background-1">
+        <section>
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 order-lg-2">
+                        <div class="p-5">
+                            <img class="img-fluid rounded-circle" src="{% static 'img/01.jpg' %}" alt="">
+                        </div>
+                    </div>
+                    <div class="col-lg-6 order-lg-1">
+                        <div class="p-5">
+                            <h2 class="display-4">Share music playlists in a new way...</h2>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod aliquid, mollitia odio veniam sit
+                                iste esse assumenda amet aperiam exercitationem, ea animi blanditiis recusandae! Ratione
+                                voluptatum molestiae adipisci, beatae obcaecati.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <div class="p-5">
+                            <img class="img-fluid rounded-circle" src="{% static 'img/02.jpg' %}" alt="">
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="p-5">
+                            <h2 class="display-4">Like and comment the songs you like!</h2>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod aliquid, mollitia odio veniam sit
+                                iste esse assumenda amet aperiam exercitationem, ea animi blanditiis recusandae! Ratione
+                                voluptatum molestiae adipisci, beatae obcaecati.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 order-lg-2">
+                        <div class="p-5">
+                            <img class="img-fluid rounded-circle" src="{% static 'img/03.jpg' %}" alt="">
+                        </div>
+                    </div>
+                    <div class="col-lg-6 order-lg-1">
+                        <div class="p-5">
+                            <h2 class="display-4">Allow us to create a new playlist based on the songs you liked!</h2>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod aliquid, mollitia odio veniam sit
+                                iste esse assumenda amet aperiam exercitationem, ea animi blanditiis recusandae! Ratione
+                                voluptatum molestiae adipisci, beatae obcaecati.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}
