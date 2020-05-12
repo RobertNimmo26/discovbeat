@@ -1,26 +1,37 @@
-# from django.db import models
-# from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
-# from django.utils.translation import gettext_lazy as _
-# from django.template.defaultfilters import slugify
-# from django.utils import timezone
-# from .managers import CustomUserManager
+from django.db import models
+from django.contrib.auth.models import User
+from django.template.defaultfilters import slugify
 
-# # User Model
-# class User(AbstractBaseUser, PermissionsMixin):
-#     username = models.CharField(_("username"), max_length=50)
-#     email = models.EmailField(_('email address'), unique=True)
-#     name = models.CharField(_("name"), max_length=50)
-#     party = models.ForeignKey(Party, on_delete=models.CASCADE)
+class userPlaylist(models.Model):
+    sharedUser=models.ForeignKey(User,related_name="sharedUser", on_delete=models.CASCADE)
+    owner=models.ForeignKey(User,related_name="owner", on_delete=models.CASCADE)
+    slug = models.SlugField(unique=True)
+    name= models.CharField(max_length=200)
+    description = models.CharField(max_length=500)
+    playlistId= models.CharField(primary_key=True, max_length=100)
 
-#     #Required django User fields
-#     is_staff = models.BooleanField(default=False)
-#     is_active = models.BooleanField(default=True)
-#     #####
+    def __str__(self):
+        return self.name
 
-#     USERNAME_FIELD = 'email'
-#     REQUIRED_FIELDS = ['name']
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.playlistId)
+        super(Quiz, self).save(*args, **kwargs)
 
-#     objects = CustomUserManager()
+class song(models.Model):
+    playlist=models.ForeignKey(userPlaylist, on_delete=models.CASCADE)
+    slug = models.SlugField(unique=True)
+    rating=models.BooleanField(default=False)
+    comment=models.CharField(max_length=300)
+    name=models.CharField(max_length=100)
+    album=models.CharField(max_length=100)
+    artists=models.CharField(max_length=100)
+    songId= models.CharField(primary_key=True, max_length=100)
 
-#     def __str__(self):
-#         return self.email
+    # In the future add restriction check
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.playlistId)
+        super(Quiz, self).save(*args, **kwargs)

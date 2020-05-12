@@ -138,7 +138,7 @@ AUTHENTICATION_BACKENDS = (
 )
 
 
-SOCIAL_AUTH_SPOTIFY_SCOPE = ['user-read-email', 'playlist-read-private','playlist-modify-private']
+SOCIAL_AUTH_SPOTIFY_SCOPE = ['user-read-email', 'playlist-read-private']
 
 LOGIN_REDIRECT_URL = '/dashboard/'
 

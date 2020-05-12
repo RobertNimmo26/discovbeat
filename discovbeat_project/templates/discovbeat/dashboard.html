@@ -1,10 +1,8 @@
-{% extends 'discovbeat/base.html' %}
+{% extends 'discovbeat/loginbase.html' %}
 {% load static %}
 
-{% block navbar %}
-    <li class="nav-item">
-        <a href="{% url 'logout' %}" class="nav-link">Log out</a>
-    </li>
+{% block headblock%}
+    <link rel='stylesheet' href="{% static 'css/dashboardCSS.css' %}">
 {% endblock %}
 
 {% block bodyblock %}
@@ -24,16 +22,31 @@
         <div class="row pt-2 pb-4">
             <div class="col-md">
                 <h2>Share a playlist</h2>
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% comment %} {% for key,value in userPlaylists.items %}
+                    <p>{{key}}</p>
+                    <p>{{value}}</p>
+                {% endfor %} {% endcomment %}
+                <form action="{% url 'shareplaylist'%}" method="POST">
+                    {% csrf_token %}
+                    <select name="playlist" id="playlist" onchange="this.form.submit()">
+                        {% for key,value in userPlaylists.items %}
+                            <option value="{{value}}" >{{key}}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+
+                {% comment %} <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle btn-lg" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Your playlists
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
+                        <a class="dropdown-item disabled" href="#">Options:</a>
+                        {% for playlist in userPlaylists %}
+
+                            <a class="dropdown-item" value={{playlist}} action="{% url 'shareplaylist'%}" method="POST">{{playlist}}</a>
+                        {% endfor %}
                     </div>
-                </div>
+                </div> {% endcomment %}
             </div>
         </div>
     </div>

@@ -1,0 +1,12 @@
+{% extends 'discovbeat/base.html' %}
+{% load static %}
+
+{% block headblock%}
+    <link rel='stylesheet' href="{% static 'css/loginbaseCSS.css' %}">
+{% endblock %}
+
+{% block navbar %}
+    <li class="nav-item">
+        <a href="{% url 'logout' %}" class="nav-link">Log out</a>
+    </li>
+{% endblock %}
