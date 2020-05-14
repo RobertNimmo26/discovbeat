@@ -4,3 +4,16 @@
 {% block headblock%}
     <link rel='stylesheet' href="{% static 'css/shareplaylistCSS.css' %}">
 {% endblock %}
+
+{% block bodyblock%}
+    <br>
+    <div class="container mt-5">
+        {{playlist.name}}
+        <br>
+        {% for song in songList%}
+            {% if song.songId %}
+                <iframe src="https://open.spotify.com/embed/track/{{song.songId}}" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+            {% endif %}
+        {%endfor%}
+    </div>
+{%endblock%}
