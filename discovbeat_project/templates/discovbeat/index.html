@@ -7,11 +7,22 @@
     <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
 {%endblock%}
 
+
 {% block navbar %}
-    <li class="nav-item">
+    {% comment %} <li class="nav-item">
         <a class="nav-link" href="#">Log In</a>
+    </li> {% endcomment %}
+    <li class="nav-item">
+        <a class="nav-link" href="#">about</a>
     </li>
+    {%if request.user.is_authenticated %}
+        <li class="nav-item">
+            <a href="{% url 'logout' %}" class="nav-link">Log out</a>
+        </li>
+    {%endif%}
 {% endblock %}
+
+{% block dashboardUrl %}{% url 'index' %}{%endblock%}
 
 {% block bodyblock%}
     <header class="masthead text-center">
@@ -20,9 +31,7 @@
                 <img src="{%static 'images/logo.png'%}" alt="Logo">
                 <br><br>
                 <h2 class="masthead-subheading mb-0 h-teko">Explore new music with your friends!</h2>
-                <a href="{% url "social:begin" "spotify" %}" class="btn btn-primary btn-xl rounded-pill mt-5">Sign up here</a>
-                {% comment %} <a href="#" class="btn btn-primary btn-xl rounded-pill mt-5">Log in using Spotify   <i class="fab fa-spotify w3-xlarge"></i></a> {% endcomment %}
-               
+                <a href="{% url "social:begin" "spotify" %}" class="btn btn-primary btn-xl rounded-pill mt-5">Log in using Spotify <i class="fab fa-spotify w3-xlarge"></i></a>
             </div>
         </div>
         <div class="bg-circle-1 bg-circle"></div>

@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from social_django.models import *
 from discovbeat.models import UserPlaylist, Song
+from discovbeat.forms import PlaylistShareForm, SongShareForm
 
 import spotipy
 
@@ -34,7 +35,6 @@ def dashboard(request):
 	offset=0
 	while True:
 		playlists = sp.user_playlists(user=username, limit=50, offset=offset)
-		print(len(playlists["items"]))
 		for playlist in playlists['items']:
 			userPlaylists[playlist["name"]]=playlist
 		if len(playlists["items"])<50:
@@ -44,20 +44,24 @@ def dashboard(request):
 
 	context_dict["userPlaylists"]=userPlaylists
 
-	# print(i)
-	# print(context_dict["userPlaylist"])
-		#results = sp.playlist(playlist['id'], fields="tracks,next")
-		# tracks = results['tracks']
-		# print(tracks)
-		# while tracks['next']:
-		# 	tracks = sp.next(tracks)
-		# 	print(tracks)
+	deletePlaylists=UserPlaylist.objects.filter(owner=request.user, sharedUser=None)
 
-		# print(playlist['name'])
+	for i in deletePlaylists:
+		i.delete()
+
+	sharedPlaylists=UserPlaylist.objects.filter(owner=request.user)
+
+	context_dict["sharedPlaylists"]=sharedPlaylists
+
+	sharedToYouPlaylists=UserPlaylist.objects.filter(sharedUser=request.user)
+
+	context_dict["sharedToYouPlaylists"]=sharedToYouPlaylists
+
 
 	return render(request, 'discovbeat/dashboard.html', context=context_dict)
 
 def shareplaylist(request, playlist=None):
+	print(playlist)
 	context_dict={}
 	songList=[]
 	for key,value in request.POST.items():
@@ -75,11 +79,11 @@ def shareplaylist(request, playlist=None):
 				tracks = sp.next(tracks)
 				songList+=add_tracks(tracks,newPlaylist)
 
-			for song in songList:
-				print(song.name)
+			songshareform=SongShareForm()
+			playlistshareform=PlaylistShareForm()
+
 			context_dict['playlist']=newPlaylist
 			context_dict['songList']=songList
-
 
 	return render(request, 'discovbeat/shareplaylist.html', context=context_dict)
 
@@ -91,3 +95,25 @@ def add_tracks(results,playlist):
 		song.save()
 		songList.append(song)
 	return songList
+
+def submitshareplaylist(request,playlistAutoId=None):
+	print(playlistAutoId)
+	if request.method == "POST":
+		POST = request.POST.copy()
+
+		playlist = UserPlaylist.objects.get(playlistAutoId=playlistAutoId)
+		usershare=POST.pop("usershare")
+		print(usershare)
+		user=User.objects.get(email=usershare[0])
+		description=POST.pop("description")
+		playlist.sharedUser = user
+		playlist.description = description[0]
+		playlist.save()
+		description=POST.pop("csrfmiddlewaretoken")
+
+		for key, value in POST.items():
+			songObject = Song.objects.get(songAutoId=key)
+			songObject.description = value
+			songObject.save()
+
+	return redirect(dashboard)
