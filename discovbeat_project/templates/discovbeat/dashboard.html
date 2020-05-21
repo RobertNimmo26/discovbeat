@@ -11,19 +11,26 @@
             <div class="col-md-9">
                 <br>
                 <div class="row">
+
                     <div class="col-md-6">
                         <h2>Playlists shared to you</h2>
-                        <div class="card">
-                            <div class="card-body">
-                                {% if sharedToYouPlaylists%}
+                        {% if sharedToYouPlaylists%}
+                            <form action="{% url 'rateplaylist'%}" method="POST">
+                                {% csrf_token %}
+                                <select  class="custom-select" size="5" name="sharedToYouPlaylists" id="sharedToYouPlaylists" onchange="this.form.submit()">
+
                                     {% for playlist in sharedToYouPlaylists%}
-                                        <p class="card-text">{{playlist}}</p>
+                                        <option value="{{playlist.playlistAutoId}}" >{{playlist}} shared by {{playlist.owner.email}}</option>
                                     {%endfor%}
-                                {%else%}
+                                </select>
+                            </form>
+                        {%else%}
+                            <div class="card">
+                                <div class="card-body">
                                     <p class="card-text">You have not been shared any playlists yet :o</p>
-                                {%endif%}
+                                </div>
                             </div>
-                        </div>
+                        {%endif%}
                     </div>
                     <div class="col-md-6">
                         <h2>Your shared playlists</h2>

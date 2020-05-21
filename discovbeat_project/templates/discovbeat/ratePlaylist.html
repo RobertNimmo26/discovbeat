@@ -1,0 +1,88 @@
+{% extends 'discovbeat/loginbase.html' %}
+{% load static %}
+
+{% block headblock%}
+    <script src="https://kit.fontawesome.com/d3c4cf8724.js" crossorigin="anonymous"></script>
+    <link rel='stylesheet' href="{% static 'css/ratePlaylistCSS.css' %}">
+{% endblock %}
+
+{% block bodyblock%}
+    {% comment %} {{playlist}}
+    {{songList}} {% endcomment %}
+
+    <br>
+    <div class="container mt-5">
+        <h2>{{playlist.name}}</h2>
+        <br>
+        <div class="form-row">
+            <div class="form-group col-md-5">
+                <a href="https://open.spotify.com/playlist/{{playlist.playlistId}}">Spotify playlist link</a>
+                <br>
+                <div class="embed-responsive embed-responsive-4by3">
+                    <iframe class="embed-responsive-item" src="https://open.spotify.com/embed/playlist/{{playlist.playlistId}}" allowtransparency="true" allow="encrypted-media" allowfullscreen></iframe>
+                </div>
+            </div>
+            <div class="form-group col-md-7 pt-5">
+                <div class="container">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Description</h5>
+                            <p class="card-text">{{playlist.description}}</p>
+                            <h5 class="card-title">Shared by</h5>
+                            <p class="card-text">{{playlist.owner.email}} - {{playlist.owner.first_name}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+        </div>
+        <br>
+        <form action="{% url 'submitrateplaylist' %}" method="post">
+            {% csrf_token %}
+            {% for song in songList%}
+                <h4>{{song.name}}</h4>
+                    <div class="form-row">
+                        {% if song.songId %}
+                            <div class="form-group col-md-5">
+                                <a href="https://open.spotify.com/playlist/{{song.songId}}">Spotify song link</a>
+                                <br>
+                                <div class="embed-responsive embed-responsive-16by9">
+                                    <iframe class="embed-responsive-item"  src="https://open.spotify.com/embed/track/{{song.songId}}" allowtransparency="true" allow="encrypted-media" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                        {% else %}
+                            <p>This song is not available on Spotify. Try searching on Google for the song instead.</p>
+                            <p>Some of the reasons this could happen is because the song is not available in your territory or the song is a local file in your profile.</p>
+                        {% endif %}
+                        <div class="form-group col-md-7 pt-5">
+                            <div class="container">
+                                {% if song.description %}
+                                    <h5>{{playlist.owner.first_name}}'s comments about {{song.name}}</h5>
+                                    <p>{{song.description}}</p>
+                                {% endif%}
+
+                                <label for="{{song.songAutoId}}">Write your comments about the song!</label>
+                                <textarea class="form-control" id="{{song.songAutoId}}" name={{song.songAutoId}} rows="4" placeholder="Your comment for {{song.name}}"></textarea>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary btn-circle btn-md"  onclick="like({{song.songAutoId}})" id="likeButton{{song.songAutoId}}" value="False"><i id="heart{{song.songAutoId}}" class="fas fa-heart fa-lg" ></i></button>
+                    </div>
+                <br>
+            {%endfor%}
+            <input class="btn mt-1 btn-lg float-right" id="mySubmit" type="submit" value="submit"/>
+        </form>
+    </div>
+    <script>
+        function like(songId){
+            alert($("#likeButton"+songId).value);
+            if ($("#likeButton"+songId).value=='False') {
+                $("#likeButton"+songId).value = 'True';
+                $("#heart"+songId).css('color','red');
+
+            } else {
+                $("#likeButton"+songId).value = 'False';
+                $("#heart"+songId).css('color','white');
+            }
+        }
+    </script>
+{%endblock%}

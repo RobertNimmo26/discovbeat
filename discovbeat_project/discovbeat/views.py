@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
+from django.http import JsonResponse
+
 from social_django.models import *
 from discovbeat.models import UserPlaylist, Song
 from discovbeat.forms import PlaylistShareForm, SongShareForm
@@ -61,7 +63,6 @@ def dashboard(request):
 	return render(request, 'discovbeat/dashboard.html', context=context_dict)
 
 def shareplaylist(request, playlist=None):
-	print(playlist)
 	context_dict={}
 	songList=[]
 	for key,value in request.POST.items():
@@ -96,6 +97,14 @@ def add_tracks(results,playlist):
 		songList.append(song)
 	return songList
 
+def checkForUser(request):
+	email = request.GET.get('email', None)
+	data = {
+		'exist': User.objects.filter(email__iexact=email, is_staff=False).exists()
+	}
+	print(data)
+	return JsonResponse(data)
+
 def submitshareplaylist(request,playlistAutoId=None):
 	print(playlistAutoId)
 	if request.method == "POST":
@@ -116,4 +125,19 @@ def submitshareplaylist(request,playlistAutoId=None):
 			songObject.description = value
 			songObject.save()
 
+	return redirect(dashboard)
+
+def ratePlaylist(request):
+	context_dict={}
+	for key,value in request.POST.items():
+		if key!="csrfmiddlewaretoken":
+			playlist = UserPlaylist.objects.get(playlistAutoId=value)
+			songList = Song.objects.filter(playlist=playlist)
+			context_dict['playlist']=playlist
+			context_dict['songList']=songList
+
+
+	return render(request, 'discovbeat/ratePlaylist.html', context=context_dict)
+
+def submitRatePlaylist(request):
 	return redirect(dashboard)
