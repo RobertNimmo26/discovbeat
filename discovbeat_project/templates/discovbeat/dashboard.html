@@ -7,46 +7,75 @@
 
 {% block bodyblock %}
     <div class="container mt-5">
-
         <div class="row pt-3">
-            <div class="col-md-6">
-                <h2>Shared playlist library</h2>
-                <p>You have not been shared any playlists yet :o</p>
-            </div>
-            <div class="col-md-6">
-                <h2>Your shared playlists</h2>
-                <p>You have not shared any playlist yet to your friends</p> 
-            </div>
-        </div>
-
-        <div class="row pt-2 pb-4">
-            <div class="col-md">
-                <h2>Share a playlist</h2>
-                {% comment %} {% for key,value in userPlaylists.items %}
-                    <p>{{key}}</p>
-                    <p>{{value}}</p>
-                {% endfor %} {% endcomment %}
-                <form action="{% url 'shareplaylist'%}" method="POST">
-                    {% csrf_token %}
-                    <select name="playlist" id="playlist" onchange="this.form.submit()">
-                        {% for key,value in userPlaylists.items %}
-                            <option value="{{value}}" >{{key}}</option>
-                        {% endfor %}
-                    </select>
-                </form>
-
-                {% comment %} <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle btn-lg" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Your playlists
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item disabled" href="#">Options:</a>
-                        {% for playlist in userPlaylists %}
-
-                            <a class="dropdown-item" value={{playlist}} action="{% url 'shareplaylist'%}" method="POST">{{playlist}}</a>
-                        {% endfor %}
+            <div class="col-md-9">
+                <br>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h2>Playlists shared to you</h2>
+                        {% if sharedToYouPlaylists%}
+                            <form action="{% url 'playlistdashboard'%}" method="POST">
+                                {% csrf_token %}
+                                <select  class="custom-select" size="5" name="sharedToYouPlaylists" id="sharedToYouPlaylists" onchange="this.form.submit()">
+                                    {% for playlist in sharedToYouPlaylists%}
+                                        <option value="{{playlist.playlistAutoId}}" >{{playlist}} shared by {{playlist.owner.email}}</option>
+                                    {%endfor%}
+                                </select>
+                            </form>
+                        {%else%}
+                            <div class="card">
+                                <div class="card-body">
+                                    <p class="card-text">You have not been shared any playlists yet :o</p>
+                                </div>
+                            </div>
+                        {%endif%}
                     </div>
-                </div> {% endcomment %}
+                    <div class="col-md-6">
+                        <h2>Your shared playlists</h2>
+                        {% if sharedPlaylists%}
+                            <form action="{% url 'playlistanalysis'%}" method="POST">
+                                {% csrf_token %}
+                                <select  class="custom-select" size="5" name="sharedPlaylists" id="sharedPlaylists" onchange="this.form.submit()">
+                                    {% for playlist in sharedPlaylists%}
+                                        <option value="{{playlist.playlistAutoId}}" >{{playlist}} shared to {{playlist.sharedUser.email}}</option>
+                                    {%endfor%}
+                                </select>
+                            </form>
+                        {%else%}
+                            <div class="card">
+                                <div class="card-body">
+                                    <p class="card-text">You have not shared any playlist yet to your friends</p>
+                                </div>
+                            </div>
+                        {%endif%}
+                    </div>
+                </div>
+                <br>
+                <div class="row pt-2 pb-4">
+                    <div class="col-md">
+                        <h2>Share a playlist</h2>
+
+                        <form action="{% url 'shareplaylist'%}" method="POST">
+                            {% csrf_token %}
+                            <select  class="custom-select" size="10" name="playlist" id="playlist" onchange="this.form.submit()">
+                                {% for key,value in userPlaylists.items %}
+                                    <option value="{{value}}" >{{key}}</option>
+                                {% endfor %}
+                            </select>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 d-none d-md-block pt-4">
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="{%static 'images/logo with background.png'%}" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">Hello {{request.user.first_name}}</h5>
+                        <p class="card-text">I hope you are enjoying the website. This webapp is currently in beta testing so if you find any problems while using the website please let me know of the bug.</p>
+                        <a href="#" class="btn btn-primary">Report Bug</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

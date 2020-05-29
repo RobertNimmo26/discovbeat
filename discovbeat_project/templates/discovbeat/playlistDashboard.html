@@ -1,0 +1,56 @@
+{% extends 'discovbeat/loginbase.html' %}
+{% load static %}
+
+{% block bodyblock%}
+    <br>
+    <div class="container mt-5">
+        <div class="row pt-3">
+            <div class="col-md-6">
+                <div class="card">
+                    <h5 class="card-header">Liked Songs</h5>
+                    <div class="card-body">
+                        {% if songLikedList %}
+                            {% for song in songLikedList%}
+                                <p class="card-text">{{song.name}}  -  {{song.album}}</p>
+                            {% endfor %}
+                            <button class="btn mt-1" onclick="generatePlaylist({{playlist.playlistAutoId}}) ">Generate new playlist</button>
+                        {% else %}
+                            <p class="card-text"> You have not liked any songs yet </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 pt-4">
+                <h5>Instructions</h5>
+                <ol>
+                    <li>Click on the rate the playlist button.</li>
+                    <li>For each of the songs like and comment. Comments are optional.</li>
+                    <li>Each comment and like with be autosaved.</li>
+                    <li>You will then see on the left hand side of this page all your liked songs and you will be able to generate a new playlist based on them.</li>
+                </ol>
+                <p>Feel free to change your comments and liked songs as much as you like. You will have to generate a new playlist to have the changes effected in your generated playlist.</p>
+
+                <a href="{% url 'rateplaylist' playlist.playlistAutoId %}" class="btn btn-primary btn-lg">Rate the playlist</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function generatePlaylist(playlistAutoId) {
+            alert("This feature is currently disabled :(")
+            {% comment %} $.ajax({url: '{% url "generateplaylist" %}',
+                data: {
+                    'playlistAutoId': playlistAutoId,
+                },
+                dataType: 'json',
+                success: function (data) {
+                    alert.fadeIn(2000);
+                    alert.fadeOut(2900);
+                },
+                error: function (data){
+                    alert("An error occured while autosaving your commentTry refreshing your page.")
+                }
+            }); {% endcomment %}
+        }
+    </script>
+{% endblock %}

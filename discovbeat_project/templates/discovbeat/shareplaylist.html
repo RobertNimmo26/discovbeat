@@ -4,3 +4,91 @@
 {% block headblock%}
     <link rel='stylesheet' href="{% static 'css/shareplaylistCSS.css' %}">
 {% endblock %}
+
+{% block bodyblock%}
+    <br>
+    <div class="container mt-5">
+        <h2>{{playlist.name}}</h2>
+        <br>
+        <form action="{% url 'submitshareplaylist' playlist.playlistAutoId %}" method="post">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group col-md-5 ">
+                    <a href="https://open.spotify.com/playlist/{{playlist.playlistId}}">Spotify playlist link</a>
+                    <br>
+                    <div class="embed-responsive embed-responsive-4by3">
+                        <iframe class="embed-responsive-item" src="https://open.spotify.com/embed/playlist/{{playlist.playlistId}}" allowtransparency="true" allow="encrypted-media" allowfullscreen></iframe>
+                    </div>
+                </div>
+                <div class="form-group col-md-7 pt-5">
+                    <div class="container pt-3">
+                        <div class="form-group">
+                            <label for="description">Write you description about the playlist!</label>
+                            <textarea class="form-control" name="description" id="description" rows="4" placeholder="Playlist description"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="usershare">Who do you want to share this with?</label>
+                            <input type="email" class="form-control" name="usershare" id="usershare" placeholder="Users Email">
+                        </div>
+                        <div class="alert alert-danger" role="alert" id="userNotExist">
+                            User does not exist. Make sure you put the correct users email in.
+                        </div>
+                    </div>
+                </div>
+                <br>
+            </div>
+            <br>
+            {% for song in songList%}
+                <h4>{{song.name}}</h4>
+                {% if song.songId %}
+                    <div class="form-row">
+                        <div class="form-group col-md-5">
+                            <a href="https://open.spotify.com/playlist/{{song.songId}}">Spotify song link</a>
+                            <br>
+                            <div class="embed-responsive embed-responsive-16by9">
+                                <iframe class="embed-responsive-item"  src="https://open.spotify.com/embed/track/{{song.songId}}" allowtransparency="true" allow="encrypted-media" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-7 pt-5">
+                            <div class="container">
+                                <label for="{{song.songAutoId}}">Write your comments about the song!</label>
+                                <textarea class="form-control" id="{{song.songAutoId}}" name={{song.songAutoId}} rows="4" placeholder="Comment for {{song.name}}"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <p>This song is not available on Spotify. Try searching on Google for the song instead.</p>
+                    <p>Some of the reasons this could happen is because the song is not available in your territory or the song is a local file in your profile.</p>
+                {% endif %}
+                <br>
+            {%endfor%}
+            <input class="btn mt-1 btn-lg float-right" id="mySubmit" type="submit" value="submit"/>
+        </form>
+    </div>
+    <script>
+        $(document).ready(function(){
+            $('#userNotExist').hide();
+            document.getElementById("mySubmit").disabled = true;
+
+            $("#usershare").change(function () {
+                var email = $(this).val();
+                $.ajax({url: '{% url "checkforuser" %}',
+                    data: {
+                        'email': email
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.exist) {
+                            $('#userNotExist').hide();
+                            document.getElementById("mySubmit").disabled = false;
+                        } else {
+                            $('#userNotExist').show();
+                            document.getElementById("mySubmit").disabled = true;
+                        }
+                    }
+                });
+
+            });
+        });
+    </script>
+{%endblock%}

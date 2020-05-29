@@ -7,11 +7,16 @@
     <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
 {%endblock%}
 
+
 {% block navbar %}
-    <li class="nav-item">
-        <a class="nav-link" href="#">Log In</a>
-    </li>
+    {%if request.user.is_authenticated %}
+        <li class="nav-item">
+            <a href="{% url 'logout' %}" class="nav-link">Log out</a>
+        </li>
+    {%endif%}
 {% endblock %}
+
+{% block dashboardUrl %}{% url 'index' %}{%endblock%}
 
 {% block bodyblock%}
     <header class="masthead text-center">
@@ -20,9 +25,7 @@
                 <img src="{%static 'images/logo.png'%}" alt="Logo">
                 <br><br>
                 <h2 class="masthead-subheading mb-0 h-teko">Explore new music with your friends!</h2>
-                <a href="{% url "social:begin" "spotify" %}" class="btn btn-primary btn-xl rounded-pill mt-5">Sign up here</a>
-                {% comment %} <a href="#" class="btn btn-primary btn-xl rounded-pill mt-5">Log in using Spotify   <i class="fab fa-spotify w3-xlarge"></i></a> {% endcomment %}
-               
+                <a href="{% url "social:begin" "spotify" %}" class="btn btn-lg btn-primary btn-xl rounded-pill mt-5">Log in using Spotify <i class="fab fa-spotify w3-xlarge"></i></a>
             </div>
         </div>
         <div class="bg-circle-1 bg-circle"></div>
@@ -37,15 +40,13 @@
                 <div class="row align-items-center">
                     <div class="col-lg-6 order-lg-2">
                         <div class="p-5">
-                            <img class="img-fluid rounded-circle" src="{% static 'img/01.jpg' %}" alt="">
+                            <img class="img-fluid rounded-circle" src="{% static 'images/share_the_music.png' %}" alt="">
                         </div>
                     </div>
                     <div class="col-lg-6 order-lg-1">
                         <div class="p-5">
-                            <h2 class="display-4">Share music playlists in a new way...</h2>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod aliquid, mollitia odio veniam sit
-                                iste esse assumenda amet aperiam exercitationem, ea animi blanditiis recusandae! Ratione
-                                voluptatum molestiae adipisci, beatae obcaecati.</p>
+                            <h2 class="display-4">Share music playlists in a new exciting way...</h2>
+                            <p>Share your playlists to your friends to help them discover new music that you think they will like. For each song comment why you think they will like the song and what the song means to you and then share!</p>
                         </div>
                     </div>
                 </div>
@@ -57,15 +58,13 @@
                 <div class="row align-items-center">
                     <div class="col-lg-6">
                         <div class="p-5">
-                            <img class="img-fluid rounded-circle" src="{% static 'img/02.jpg' %}" alt="">
+                            <img class="img-fluid rounded-circle" src="{% static 'images/women_listening_to_music.png' %}" alt="">
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="p-5">
-                            <h2 class="display-4">Like and comment the songs you like!</h2>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod aliquid, mollitia odio veniam sit
-                                iste esse assumenda amet aperiam exercitationem, ea animi blanditiis recusandae! Ratione
-                                voluptatum molestiae adipisci, beatae obcaecati.</p>
+                            <h2 class="display-4">Like and comment your opinion for each song</h2>
+                            <p>Like and comment you opinion for each song in the playlists that you recieve. Help you friend discover more about the music you like.</p>
                         </div>
                     </div>
                 </div>
@@ -82,10 +81,8 @@
                     </div>
                     <div class="col-lg-6 order-lg-1">
                         <div class="p-5">
-                            <h2 class="display-4">Allow us to create a new playlist based on the songs you liked!</h2>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod aliquid, mollitia odio veniam sit
-                                iste esse assumenda amet aperiam exercitationem, ea animi blanditiis recusandae! Ratione
-                                voluptatum molestiae adipisci, beatae obcaecati.</p>
+                            <h2 class="display-4">Discover new music from the songs you loved</h2>
+                            <p>With spotify recommendations we will create a new playlist based on the songs that you liked!
                         </div>
                     </div>
                 </div>

@@ -1,0 +1,77 @@
+{% extends 'discovbeat/loginbase.html' %}
+{% load static %}
+
+{% block headblock%}
+    <script src="https://kit.fontawesome.com/d3c4cf8724.js" crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block bodyblock%}
+    <br>
+    <div class="container mt-5">
+        <h2>Playlist analysis</h2>
+        <h4>{{playlist.name}}</h4>
+        <br>
+        <div class="form-row">
+            <div class="form-group col-md-5">
+                <a href="https://open.spotify.com/playlist/{{playlist.playlistId}}">Spotify playlist link</a>
+                <br>
+                <div class="embed-responsive embed-responsive-4by3">
+                    <iframe class="embed-responsive-item" src="https://open.spotify.com/embed/playlist/{{playlist.playlistId}}" allowtransparency="true" allow="encrypted-media" allowfullscreen></iframe>
+                </div>
+            </div>
+            <div class="form-group col-md-7 pt-5">
+                <div class="container">
+                    <div class="card">
+                        <div class="card-body">
+                            {% if playlist.description%}
+                                <h5 class="card-title">Description</h5>
+                                <p class="card-text">{{playlist.description}}</p>
+                            {% endif %}
+                            <h5 class="card-title">Shared to</h5>
+                            <p class="card-text">{{playlist.sharedUser.email}} - {{playlist.sharedUser.first_name}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+        </div>
+        <br>
+        {% for song in songList%}
+            <h4>{{song.name}}</h4>
+                <div class="form-row">
+                    <div class="form-group col-md-5">
+                        {% if song.songId %}
+                            <a href="https://open.spotify.com/playlist/{{song.songId}}">Spotify song link</a>
+                            <br>
+                            <div class="embed-responsive embed-responsive-16by9">
+                                <iframe class="embed-responsive-item"  src="https://open.spotify.com/embed/track/{{song.songId}}" allowtransparency="true" allow="encrypted-media" allowfullscreen></iframe>
+                            </div>
+                        {% else %}
+                            <p>This song is not available on Spotify. Try searching on Google for the song instead.</p>
+                            <p>Some of the reasons this could happen is because the song is not available in your territory or the song is a local file in your profile.</p>
+                        {% endif %}
+                        <br>
+                    </div>
+
+                    <div class="form-group col-md-7 pt-3">
+                        <div class="card">
+                            <div class="card-body">
+                                {% if song.comment %}
+                                    <h5 class="card-title">{{playlist.sharedUser.first_name}}'s comments about {{song.name}} for you!</h5>
+                                    <p class="card-text">{{song.comment}}</p>
+                                {% else%}
+                                    <h5 class="card-title">{{playlist.sharedUser.first_name}} hasn't left any comments for {{song.name}}</h5>
+                                {% endif%}
+                                {%if song.rating %}
+                                    <br>
+                                    <h7 class="card-subtitle mb-2">{{playlist.sharedUser.first_name}} <i id="heart{{song.songAutoId}}" class="fas fa-heart fa-lg" style="color:red" ></i> this song!</h7>
+                                {%endif%}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <br>
+        {%endfor%}
+        <a href="{% url 'submitrateplaylist' %}" class="btn btn-primary mt-1 btn-lg float-right">Return to dashboard</a>
+    </div>
+{% endblock %}
