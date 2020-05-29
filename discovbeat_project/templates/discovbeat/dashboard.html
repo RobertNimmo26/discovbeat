@@ -11,14 +11,12 @@
             <div class="col-md-9">
                 <br>
                 <div class="row">
-
                     <div class="col-md-6">
                         <h2>Playlists shared to you</h2>
                         {% if sharedToYouPlaylists%}
-                            <form action="{% url 'rateplaylist'%}" method="POST">
+                            <form action="{% url 'playlistdashboard'%}" method="POST">
                                 {% csrf_token %}
                                 <select  class="custom-select" size="5" name="sharedToYouPlaylists" id="sharedToYouPlaylists" onchange="this.form.submit()">
-
                                     {% for playlist in sharedToYouPlaylists%}
                                         <option value="{{playlist.playlistAutoId}}" >{{playlist}} shared by {{playlist.owner.email}}</option>
                                     {%endfor%}
@@ -34,17 +32,22 @@
                     </div>
                     <div class="col-md-6">
                         <h2>Your shared playlists</h2>
-                        <div class="card">
-                            <div class="card-body">
-                                {% if sharedPlaylists%}
+                        {% if sharedPlaylists%}
+                            <form action="{% url 'playlistanalysis'%}" method="POST">
+                                {% csrf_token %}
+                                <select  class="custom-select" size="5" name="sharedPlaylists" id="sharedPlaylists" onchange="this.form.submit()">
                                     {% for playlist in sharedPlaylists%}
-                                        <p class="card-text">{{playlist}}</p>
+                                        <option value="{{playlist.playlistAutoId}}" >{{playlist}} shared to {{playlist.sharedUser.email}}</option>
                                     {%endfor%}
-                                {%else%}
+                                </select>
+                            </form>
+                        {%else%}
+                            <div class="card">
+                                <div class="card-body">
                                     <p class="card-text">You have not shared any playlist yet to your friends</p>
-                                {%endif%}
+                                </div>
                             </div>
-                        </div>
+                        {%endif%}
                     </div>
                 </div>
                 <br>

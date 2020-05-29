@@ -7,9 +7,6 @@
 {% endblock %}
 
 {% block bodyblock%}
-    {% comment %} {{playlist}}
-    {{songList}} {% endcomment %}
-
     <br>
     <div class="container mt-5">
         <h2>{{playlist.name}}</h2>
@@ -26,8 +23,10 @@
                 <div class="container">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Description</h5>
-                            <p class="card-text">{{playlist.description}}</p>
+                            {% if playlist.description%}
+                                <h5 class="card-title">Description</h5>
+                                <p class="card-text">{{playlist.description}}</p>
+                            {% endif %}
                             <h5 class="card-title">Shared by</h5>
                             <p class="card-text">{{playlist.owner.email}} - {{playlist.owner.first_name}}</p>
                         </div>
@@ -37,52 +36,98 @@
             <br>
         </div>
         <br>
-        <form action="{% url 'submitrateplaylist' %}" method="post">
-            {% csrf_token %}
-            {% for song in songList%}
-                <h4>{{song.name}}</h4>
-                    <div class="form-row">
+        {% for song in songList%}
+            <h4>{{song.name}}</h4>
+                <div class="form-row">
+                    <div class="form-group col-md-5">
                         {% if song.songId %}
-                            <div class="form-group col-md-5">
-                                <a href="https://open.spotify.com/playlist/{{song.songId}}">Spotify song link</a>
-                                <br>
-                                <div class="embed-responsive embed-responsive-16by9">
-                                    <iframe class="embed-responsive-item"  src="https://open.spotify.com/embed/track/{{song.songId}}" allowtransparency="true" allow="encrypted-media" allowfullscreen></iframe>
-                                </div>
+                            <a href="https://open.spotify.com/playlist/{{song.songId}}">Spotify song link</a>
+                            <br>
+                            <div class="embed-responsive embed-responsive-16by9">
+                                <iframe class="embed-responsive-item"  src="https://open.spotify.com/embed/track/{{song.songId}}" allowtransparency="true" allow="encrypted-media" allowfullscreen></iframe>
                             </div>
                         {% else %}
                             <p>This song is not available on Spotify. Try searching on Google for the song instead.</p>
                             <p>Some of the reasons this could happen is because the song is not available in your territory or the song is a local file in your profile.</p>
                         {% endif %}
-                        <div class="form-group col-md-7 pt-5">
-                            <div class="container">
-                                {% if song.description %}
-                                    <h5>{{playlist.owner.first_name}}'s comments about {{song.name}}</h5>
-                                    <p>{{song.description}}</p>
-                                {% endif%}
+                        <br>
+                        <div class="alert alert-success" id="alert{{song.songAutoId}}" style="display:none" role="alert">
+                            Comments saved successfully
+                        </div>
+                    </div>
 
-                                <label for="{{song.songAutoId}}">Write your comments about the song!</label>
-                                <textarea class="form-control" id="{{song.songAutoId}}" name={{song.songAutoId}} rows="4" placeholder="Your comment for {{song.name}}"></textarea>
+                    <div class="form-group col-md-7 pt-3">
+                        <div class="container">
+                            {% if song.description %}
+                                <h5>{{playlist.owner.first_name}}'s comments about {{song.name}} for you!</h5>
+                                <p>{{song.description}}</p>
+                            {% endif%}
+
+                            <label for="{{song.songAutoId}}">Write your comments about the song!</label>
+                            <div class="row">
+                                <div class="col-md-11">
+                                    <textarea onchange="saveComment({{song.songAutoId}})" class="form-control" id="{{song.songAutoId}}" name={{song.songAutoId}} rows="4" placeholder="Your comment for {{song.name}}">{{song.comment}}</textarea>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="pt-4">
+                                        {%if song.rating %}
+                                            <button type="button" class="btn btn-primary btn-circle btn-md"  onclick="like({{song.songAutoId}})" id="likeButton{{song.songAutoId}}" value="{{song.rating}}"><i id="heart{{song.songAutoId}}" class="fas fa-heart fa-lg" style="color:red" ></i></button>
+                                        {%else%}
+                                            <button type="button" class="btn btn-primary btn-circle btn-md"  onclick="like({{song.songAutoId}})" id="likeButton{{song.songAutoId}}" value="{{song.rating}}"><i id="heart{{song.songAutoId}}" class="fas fa-heart fa-lg" style="color:white" ></i></button>
+                                        {%endif%}
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-primary btn-circle btn-md"  onclick="like({{song.songAutoId}})" id="likeButton{{song.songAutoId}}" value="False"><i id="heart{{song.songAutoId}}" class="fas fa-heart fa-lg" ></i></button>
                     </div>
-                <br>
-            {%endfor%}
-            <input class="btn mt-1 btn-lg float-right" id="mySubmit" type="submit" value="submit"/>
-        </form>
+                </div>
+            <br>
+        {%endfor%}
+        <a href="{% url 'submitrateplaylist' %}" class="btn btn-primary mt-1 btn-lg float-right">Return to dashboard</a>
     </div>
     <script>
         function like(songId){
-            alert($("#likeButton"+songId).value);
-            if ($("#likeButton"+songId).value=='False') {
-                $("#likeButton"+songId).value = 'True';
-                $("#heart"+songId).css('color','red');
+            var likebtn = document.getElementById("likeButton"+songId);
+            var heartbtn = document.getElementById("heart"+songId)
+            heartbtn.style.color='red';
+            if (likebtn.value=='False') {
+                likebtn.value = 'True';
+                heartbtn.style.color='red';
 
             } else {
-                $("#likeButton"+songId).value = 'False';
-                $("#heart"+songId).css('color','white');
+                likebtn.value = 'False';
+                heartbtn.style.color='white';
+
             }
+            $.ajax({url: '{% url "savelike" %}',
+                data: {
+                    'songAutoId': songId,
+                    'like': likebtn.value
+                },
+                dataType: 'json',
+                error: function (data){
+                    alert("An error occured while autosaving your song like. Try refreshing your page.")
+                }
+            });
+        }
+
+        function saveComment(songAutoId) {
+            var comment = document.getElementById(songAutoId.toString()).value;
+            var alert = $('#alert'+songAutoId);
+            $.ajax({url: '{% url "savecomment" %}',
+                data: {
+                    'songAutoId': songAutoId,
+                    'comment': comment
+                },
+                dataType: 'json',
+                success: function (data) {
+                    alert.fadeIn(2000);
+                    alert.fadeOut(2900);
+                },
+                error: function (data){
+                    alert("An error occured while autosaving your commentTry refreshing your page.")
+                }
+            });
         }
     </script>
 {%endblock%}

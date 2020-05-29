@@ -7,7 +7,11 @@ urlpatterns = [
 	path('shareplaylist/', views.shareplaylist, name='shareplaylist'),
 	path('submitshareplaylist/<int:playlistAutoId>/', views.submitshareplaylist,name='submitshareplaylist'),
 	path('ajax/checkforuser', views.checkForUser, name='checkforuser'),
-	path('ratePlaylist/', views.ratePlaylist, name='rateplaylist'),
-	path('submitratePlaylist/', views.submitRatePlaylist, name='submitrateplaylist'),
-
+	path('ajax/saveComment',views.saveComment, name='savecomment'),
+	path('ajax/saveLike',views.saveLike, name='savelike'),
+	#path('ajax/generatePlaylist',views.generatePlaylist, name='generateplaylist'),
+	path('ratePlaylist/<int:playlistAutoId>/', views.ratePlaylist, name='rateplaylist'),
+	path('submitRatePlaylist/', views.submitRatePlaylist, name='submitrateplaylist'),
+	path('playlistDashboard/', views.playlistDashboard, name='playlistdashboard'),
+	path('playlistAnalysis/', views.playlistAnalysis, name='playlistanalysis'),
 ]

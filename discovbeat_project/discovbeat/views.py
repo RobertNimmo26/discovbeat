@@ -1,12 +1,14 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
 
 from social_django.models import *
 from discovbeat.models import UserPlaylist, Song
-from discovbeat.forms import PlaylistShareForm, SongShareForm
 
 import spotipy
+import requests
 
 
 def index(request):
@@ -20,7 +22,7 @@ def getToken(user):
 	extraData=userSocialId.extra_data
 	return extraData['access_token']
 
-
+@login_required
 def dashboard(request):
 
 	context_dict = {}
@@ -62,6 +64,7 @@ def dashboard(request):
 
 	return render(request, 'discovbeat/dashboard.html', context=context_dict)
 
+@login_required
 def shareplaylist(request, playlist=None):
 	context_dict={}
 	songList=[]
@@ -79,9 +82,6 @@ def shareplaylist(request, playlist=None):
 			while tracks['next']:
 				tracks = sp.next(tracks)
 				songList+=add_tracks(tracks,newPlaylist)
-
-			songshareform=SongShareForm()
-			playlistshareform=PlaylistShareForm()
 
 			context_dict['playlist']=newPlaylist
 			context_dict['songList']=songList
@@ -105,6 +105,7 @@ def checkForUser(request):
 	print(data)
 	return JsonResponse(data)
 
+@login_required
 def submitshareplaylist(request,playlistAutoId=None):
 	print(playlistAutoId)
 	if request.method == "POST":
@@ -118,7 +119,7 @@ def submitshareplaylist(request,playlistAutoId=None):
 		playlist.sharedUser = user
 		playlist.description = description[0]
 		playlist.save()
-		description=POST.pop("csrfmiddlewaretoken")
+		POST.pop("csrfmiddlewaretoken")
 
 		for key, value in POST.items():
 			songObject = Song.objects.get(songAutoId=key)
@@ -127,17 +128,97 @@ def submitshareplaylist(request,playlistAutoId=None):
 
 	return redirect(dashboard)
 
-def ratePlaylist(request):
+@login_required
+def ratePlaylist(request,playlistAutoId):
+	context_dict={}
+	playlist = get_object_or_404(UserPlaylist, playlistAutoId=playlistAutoId)
+	songList = Song.objects.filter(playlist=playlist)
+	context_dict['playlist']=playlist
+	context_dict['songList']=songList
+
+	return render(request, 'discovbeat/ratePlaylist.html', context=context_dict)
+
+@login_required
+def playlistDashboard(request):
 	context_dict={}
 	for key,value in request.POST.items():
 		if key!="csrfmiddlewaretoken":
 			playlist = UserPlaylist.objects.get(playlistAutoId=value)
+			songLikedList = Song.objects.filter(playlist=playlist, rating=True)
+			context_dict['playlist']=playlist
+			context_dict['songLikedList']=songLikedList
+
+	return render(request, 'discovbeat/playlistDashboard.html', context=context_dict)
+
+# def generatePlaylist():
+# 	playlistAutoId = request.GET.get('playlistAutoId', None)
+# 	playlist = UserPlaylist.objects.get(playlistAutoId=playlistAutoId)
+# 	song = Song.objects.filter(playlist=playlist, rating=True)
+# 	songId
+# 	endpoint_url = "https://api.spotify.com/v1/recommendations?"
+# 	token = getUserSocialId(request.user)
+# 	user_id = getToken(request.user)
+
+# 	# OUR FILTERS
+# 	market="UK"
+# 	seed_genres="indie"
+# 	target_danceability=0.9
+# 	uris = [] 
+# 	seed_artists = '0XNa1vTidXlvJ2gHSsRi4A'
+# 	seed_tracks='55SfSsxneljXOk5S3NVZIW'
+
+# 	# PERFORM THE QUERY
+# 	query = f'{endpoint_url}&market={market}&seed_genres={seed_genres}&target_danceability={target_danceability}'
+# 	query += f'&seed_artists={seed_artists}'
+# 	query += f'&seed_tracks={seed_tracks}'
+
+# 	response = requests.get(query, 
+# 				headers={"Content-Type":"application/json", 
+# 							"Authorization":f"Bearer {token}"})
+# 	json_response = response.json()
+
+# 	print('Recommended Songs:')
+# 	for i,j in enumerate(json_response['tracks']):
+# 				uris.append(j['uri'])
+# 				print(f"{i+1}) \"{j['name']}\" by {j['artists'][0]['name']}")
+
+@login_required
+def playlistAnalysis(request):
+	context_dict={}
+	for key,value in request.POST.items():
+		if key!="csrfmiddlewaretoken":
+			playlist = get_object_or_404(UserPlaylist, playlistAutoId=value)
 			songList = Song.objects.filter(playlist=playlist)
 			context_dict['playlist']=playlist
 			context_dict['songList']=songList
 
+	return render(request, 'discovbeat/playlistAnalysis.html', context=context_dict)
 
-	return render(request, 'discovbeat/ratePlaylist.html', context=context_dict)
-
+@login_required
 def submitRatePlaylist(request):
 	return redirect(dashboard)
+
+def saveComment(request):
+	songId = request.GET.get('songAutoId', None)
+	comment = request.GET.get('comment', None)
+	song = Song.objects.get(songAutoId=songId)
+	song.comment=comment
+	song.save()
+	data = {
+		'songAutoId': songId,
+		'comment':comment
+	}
+	return JsonResponse(data)
+
+def saveLike(request):
+	songId = request.GET.get('songAutoId', None)
+	like = request.GET.get('like', None)
+	print(songId,like)
+	song = Song.objects.get(songAutoId=songId)
+	song.rating=like
+	song.save()
+	data = {
+		'songAutoId': songId,
+		'like':like
+	}
+	return JsonResponse(data)
