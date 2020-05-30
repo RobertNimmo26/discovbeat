@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,7 +25,7 @@ TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ui$@zw#313!78i0)v8778jza#(51)nwgqyzcox9j60tl9mth7#'
+SECRET_KEY = os.getenv('SECRETKEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -128,9 +130,9 @@ STATICFILES_DIRS = [STATIC_DIR, ]
 
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
-SOCIAL_AUTH_SPOTIFY_KEY = '17f9e6621f324347bc8d77daa179641f'
+SOCIAL_AUTH_SPOTIFY_KEY = os.getenv("SOCIALAUTHSPOTIFYKEY")
 
-SOCIAL_AUTH_SPOTIFY_SECRET = 'caf9d2829bbf4f0abc575bc9caaba4b0'
+SOCIAL_AUTH_SPOTIFY_SECRET = os.getenv("SOCIALAUTHSPOTIFYSECRET")
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.spotify.SpotifyOAuth2',
