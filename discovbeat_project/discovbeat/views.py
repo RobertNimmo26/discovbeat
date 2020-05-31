@@ -14,6 +14,9 @@ import requests
 def index(request):
 	return render(request, 'discovbeat/index.html')
 
+def instructions(request):
+	return render(request, 'discovbeat/instructions.html')
+
 def getUserSocialId(user):
 	return UserSocialAuth.objects.get(user=user)
 

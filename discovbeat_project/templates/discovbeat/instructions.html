@@ -1,0 +1,62 @@
+{% extends 'discovbeat/base.html' %}
+{% load static %}
+
+{% block dashboardUrl %}
+    {%if request.user.is_authenticated %}
+        {% url 'dashboard' %}
+    {%else%}
+        {% url 'index' %}
+    {% endif %}
+{%endblock%}
+
+{% block navbar%}
+    {%if request.user.is_authenticated %}
+        <li class="nav-item">
+            <a href="{% url 'logout' %}" class="nav-link">Log out</a>
+        </li>
+    {%endif%}
+{% endblock%}
+
+
+{% block bodyblock%}
+    <div class="container mt-5">
+        <div class="row pt-3">
+            <div class="col">
+                <h2>Getting Started</h2>
+            </div>
+        </div>
+        <div class="pt-3">
+            <h4>What is Discovbeat</h4>
+            <p>Discovbeat is a new way to share the music you love with your friends. For too long Spotify social features have been lacking. Discovbeat is here to change that by our new way to share playlists to your friends with your own personal touch! Our mission is to allow more people to discover new music through sharing!</p>
+        </div>
+        <div class="pt-2">
+            <h4>How to use</h4>
+            <div>
+                <h5>First start</h5>
+                <ol>
+                    <li>Start by logging in with your Spotify details.</li>
+                    <li>Once logged in you will see a list of all your currently created/followed playlists in your Spotify account. If you don’t see any playlists make sure you have created or followed a playlist in your Spotify account which you would like to share.</li>
+                </ol>
+            </div>
+            <div>
+                <h5>Sharing a playlist</h5>
+                <ol>
+                    <li>Choose the playlist that you would like to share. Once clicked, you will get to a screen to start adding your own personal touch.</li>
+                    <li>You will have the option to add a description to your playlist which can be used to add a message to a friend or even just a general description about the playlists.</li>
+                    <li>You will then be given the opportunity to choose who you want to share the playlist with. This user must also be registered to the website. Currently, you can only share a playlist with one other person at a time. This doesn’t mean you can’t share the same playlist with multiple people later on. We believe this is important, to allow you to add the personal touch to the playlist you have created for your friend.</li>
+                    <li>You will be then given the opportunity to write a small comment about each song. This is completely optional; however, it will bring the personal touch. You can write anything here such as why you choose the song for your friend or even just saying this is your favourite song.</li>
+                    <li>Once you have shared the playlist, any changes that you make with the Spotify playlist will not be updated. However, we actively encourage sending playlists to friends multiple types as the playlist develops over time.</li>
+                    <li>You will be able to view your friend's comments for each your shared playlists on the “Your shared playlists” column.</li>
+                </ol>
+            </div>
+            <div>
+                <h5>Viewing a shared playlist</h5>
+                <ol>
+                    <li>If a friend has shared a playlist to you, you will be able to see this on the “Playlist shared to you” column.</li>
+                    <li>Once you have clicked on a shared playlist, you will be redirected to a dashboard that shows all the songs you have currently liked in the playlist. If this is the first time viewing the playlist this will be blank. Otherwise, you can use these songs to generate a new playlist.</li>
+                    <li>You will have a button to start rating the playlist. Once clicked, you will be redirected to a page where you can view your playlist. You will have the option to view the comment of the user who has shared the playlist with you. You will also have the opportunity to write your own comments and like the song, if you like it. Your liked songs will be used to generate a new playlist afterwards. All your comments are auto-saved so you do not need to worry about losing them. You can also come back to this as much as you will like and change your comment and liked songs as your music tastes adapt.</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+{% endblock%}
