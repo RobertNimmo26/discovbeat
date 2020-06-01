@@ -158,3 +158,10 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details',
 )
+
+
+EMAIL_HOST = os.getenv("HOST")
+EMAIL_USE_TLS = True
+EMAIL_PORT = os.getenv("PORT")
+EMAIL_HOST_USER = os.getenv("EMAIL")
+EMAIL_HOST_PASSWORD = os.getenv("EMAILPASSWORD")

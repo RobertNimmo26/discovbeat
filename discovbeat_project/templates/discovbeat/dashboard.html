@@ -72,8 +72,8 @@
                     <img class="card-img-top" src="{%static 'images/logo with background.png'%}" alt="Card image cap">
                     <div class="card-body">
                         <h5 class="card-title">Hello {{request.user.first_name}}</h5>
-                        <p class="card-text">I hope you are enjoying the website. This webapp is currently in beta testing so if you find any problems while using the website please let me know.</p>
-                        <a href="#" class="btn btn-primary">Contact us</a>
+                        <p class="card-text">I hope you are enjoying the website. This webapp is currently in beta testing so if you find any problems while using the website please let us know.</p>
+                        <a href="{% url 'contactus' %}" class="btn btn-primary">Contact us</a>
                     </div>
                 </div>
             </div>

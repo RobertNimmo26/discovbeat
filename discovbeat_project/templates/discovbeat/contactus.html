@@ -1,0 +1,59 @@
+{% extends 'discovbeat/base.html' %}
+{% load static %}
+
+{% block dashboardUrl %}
+    {%if request.user.is_authenticated %}
+        {% url 'dashboard' %}
+    {%else%}
+        {% url 'index' %}
+    {% endif %}
+{%endblock%}
+
+{% block navbar%}
+    {%if request.user.is_authenticated %}
+        <li class="nav-item">
+            <a href="{% url 'logout' %}" class="nav-link">Log out</a>
+        </li>
+    {%endif%}
+{% endblock%}
+
+{%block bodyblock%}
+    <div class="container mt-5">
+        <div class="row pt-3">
+            <div class="col">
+                <h2>Contact Us</h2>
+            </div>
+        </div>
+        <div class="pt-3">
+            <p>If you have any problems while using the website or just have any general queries please feel free to contact us!
+            <p>We will respond as promptly as possible.</p>
+        </div>
+        <div class="pt-2">
+            <h4>By email</h4>
+            <p>Feel free to send an email to us at</p>
+            <h8><a href="mailto:discovbeat@gmail.com">discovbeat@gmail.com</a></h8>
+        </div>
+        <div class="pt-5">
+            <h4>By form</h4>
+            <form action="{% url 'contactus'%}" method="post">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp" placeholder="Email" required>
+                    <small id="emailHelp" class="form-text text-muted">We will use this to contact you regarding your problem.</small>
+                </div>
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input class="form-control" name="name" id="name" placeholder="Name" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Messasge</label>
+                    <textarea class="form-control" name="message" id="message" placeholder="Message" rows=5 required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+
+    </div>
+{%endblock%}

@@ -16,7 +16,13 @@
     {%endif%}
 {% endblock %}
 
-{% block dashboardUrl %}{% url 'index' %}{%endblock%}
+{% block dashboardUrl %}
+    {%if request.user.is_authenticated %}
+        {% url 'dashboard' %}
+    {%else%}
+        {% url 'index' %}
+    {% endif %}
+{%endblock%}
 
 {% block bodyblock%}
     <header class="masthead text-center">
@@ -76,13 +82,13 @@
                 <div class="row align-items-center">
                     <div class="col-lg-6 order-lg-2">
                         <div class="p-5">
-                            <img class="img-fluid rounded-circle" src="{% static 'img/03.jpg' %}" alt="">
+                            <img class="img-fluid rounded-circle" src="{% static 'images/person_on_phone.jpg' %}" alt="">
                         </div>
                     </div>
                     <div class="col-lg-6 order-lg-1">
                         <div class="p-5">
                             <h2 class="display-4">Discover new music from the songs you loved</h2>
-                            <p>With spotify recommendations we will create a new playlist based on the songs that you liked!
+                            <p>With spotify recommendations we will create a new playlist based on the songs that you have liked!
                         </div>
                     </div>
                 </div>

@@ -14,5 +14,6 @@ urlpatterns = [
 	path('submitRatePlaylist/', views.submitRatePlaylist, name='submitrateplaylist'),
 	path('playlistDashboard/', views.playlistDashboard, name='playlistdashboard'),
 	path('playlistAnalysis/', views.playlistAnalysis, name='playlistanalysis'),
-	path('instructions/', views.instructions, name='instructions')
+	path('instructions/', views.instructions, name='instructions'),
+	path('contactus/', views.contactUs, name='contactus'),
 ]
