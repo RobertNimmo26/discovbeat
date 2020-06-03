@@ -70,7 +70,6 @@ def saveLike(request):
 	# AJAX call to save users liked songs
 	songId = request.GET.get('songAutoId', None)
 	like = request.GET.get('like', None)
-	print(songId,like)
 	song = Song.objects.get(songAutoId=songId)
 	song.rating=like
 	song.save()
@@ -123,21 +122,28 @@ def instructions(request):
 
 def contactUs(request):
 	if request.method == 'POST':
+		try:
+			# Send email
 
-		email= request.POST.get('email', None)
-		name= request.POST.get('name', None)
-		message= request.POST.get('message', None)
-		finalmessage=f'Name: {name}\nEmail: {email}\n\n{message}'
-		email = EmailMessage(
-			'Discovbeat Contact Us Form',
-			finalmessage,
-			email,
-			['discovbeat@gmail.com'],
-			reply_to=[email],
-		)
-		email.send()
+			email= request.POST.get('email', None)
+			name= request.POST.get('name', None)
+			message= request.POST.get('message', None)
+			finalmessage=f'Name: {name}\nEmail: {email}\n\n{message}'
+			email = EmailMessage(
+				'Discovbeat Contact Us Form',
+				finalmessage,
+				email,
+				['discovbeat@gmail.com'],
+				reply_to=[email],
+			)
+			email.send()
+			return render(request, 'discovbeat/contactus.html', context={"error":False, "submited":True})
+		except:
+			# If error occurs send error = True
 
-	return render(request, 'discovbeat/contactus.html')
+			return render(request, 'discovbeat/contactus.html', context={"error":True, "submited":False})
+
+	return render(request, 'discovbeat/contactus.html', context={"error":False, "submited":False})
 
 @login_required
 def dashboard(request):
