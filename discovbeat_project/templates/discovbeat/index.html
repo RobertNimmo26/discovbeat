@@ -10,8 +10,14 @@
 
 {% block navbar %}
     {%if request.user.is_authenticated %}
-        <li class="nav-item">
-            <a href="{% url 'logout' %}" class="nav-link">Log out</a>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                My profile
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <a href="{% url 'settings' %}" class="dropdown-item">Settings</a>
+                <a href="{% url 'logout' %}" class="dropdown-item">Log out</a>
+            </div>
         </li>
     {%endif%}
 {% endblock %}

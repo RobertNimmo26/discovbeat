@@ -16,4 +16,7 @@ urlpatterns = [
 	path('playlistAnalysis/', views.playlistAnalysis, name='playlistanalysis'),
 	path('instructions/', views.instructions, name='instructions'),
 	path('contactus/', views.contactUs, name='contactus'),
+	path('deletePlaylist/<int:playlistAutoId>/', views.deletePlaylist, name="deleteplaylist"),
+	path('settings/', views.settings, name='settings'),
+	path('deleteUser/', views.deleteUser, name="deleteuser"),
 ]

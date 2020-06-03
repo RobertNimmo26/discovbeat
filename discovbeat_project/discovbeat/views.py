@@ -5,6 +5,8 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.core.mail import EmailMessage
+from django.http import HttpResponseBadRequest
+from django.contrib.auth import logout
 
 
 from social_django.models import *
@@ -12,6 +14,19 @@ from discovbeat.models import UserPlaylist, Song
 
 import spotipy
 import requests
+
+# Custom Decorator #
+
+def ajax_required(ret_unexcepted):
+    def _ajax_required(func):
+        def wrapper(request, *args, **kwargs):
+            if not request.is_ajax():
+                return ret_unexcepted
+            return func(request, *args, **kwargs)
+        return wrapper
+    return _ajax_required
+
+####################
 
 # Spotify API #
 
@@ -25,6 +40,81 @@ def getToken(user):
 
 ###############
 
+# AJAX Calls #
+
+@ajax_required(HttpResponseBadRequest())
+def checkForUser(request):
+	# AJAX call to check is user exists
+	email = request.GET.get('email', None)
+	data = {
+		'exist': User.objects.filter(email__iexact=email, is_staff=False).exists()
+	}
+	return JsonResponse(data)
+
+@ajax_required(HttpResponseBadRequest())
+def saveComment(request):
+	# AJAX call to save users song comment
+	songId = request.GET.get('songAutoId', None)
+	comment = request.GET.get('comment', None)
+	song = Song.objects.get(songAutoId=songId)
+	song.comment=comment
+	song.save()
+	data = {
+		'songAutoId': songId,
+		'comment':comment
+	}
+	return JsonResponse(data)
+
+@ajax_required(HttpResponseBadRequest())
+def saveLike(request):
+	# AJAX call to save users liked songs
+	songId = request.GET.get('songAutoId', None)
+	like = request.GET.get('like', None)
+	print(songId,like)
+	song = Song.objects.get(songAutoId=songId)
+	song.rating=like
+	song.save()
+	data = {
+		'songAutoId': songId,
+		'like':like
+	}
+	return JsonResponse(data)
+
+# @ajax_required(HttpResponseBadRequest())
+# def generatePlaylist():
+# 	playlistAutoId = request.GET.get('playlistAutoId', None)
+# 	playlist = UserPlaylist.objects.get(playlistAutoId=playlistAutoId)
+# 	song = Song.objects.filter(playlist=playlist, rating=True)
+# 	songId
+# 	endpoint_url = "https://api.spotify.com/v1/recommendations?"
+# 	token = getUserSocialId(request.user)
+# 	user_id = getToken(request.user)
+
+# 	# OUR FILTERS
+# 	market="UK"
+# 	seed_genres="indie"
+# 	target_danceability=0.9
+# 	uris = [] 
+# 	seed_artists = '0XNa1vTidXlvJ2gHSsRi4A'
+# 	seed_tracks='55SfSsxneljXOk5S3NVZIW'
+
+# 	# PERFORM THE QUERY
+# 	query = f'{endpoint_url}&market={market}&seed_genres={seed_genres}&target_danceability={target_danceability}'
+# 	query += f'&seed_artists={seed_artists}'
+# 	query += f'&seed_tracks={seed_tracks}'
+
+# 	response = requests.get(query, 
+# 				headers={"Content-Type":"application/json", 
+# 							"Authorization":f"Bearer {token}"})
+# 	json_response = response.json()
+
+# 	print('Recommended Songs:')
+# 	for i,j in enumerate(json_response['tracks']):
+# 				uris.append(j['uri'])
+# 				print(f"{i+1}) \"{j['name']}\" by {j['artists'][0]['name']}")
+
+##############
+
 def index(request):
 	return render(request, 'discovbeat/index.html')
 
@@ -32,7 +122,6 @@ def instructions(request):
 	return render(request, 'discovbeat/instructions.html')
 
 def contactUs(request):
-	print(request)
 	if request.method == 'POST':
 
 		email= request.POST.get('email', None)
@@ -75,7 +164,7 @@ def dashboard(request):
 
 		# Get the maximum amount of playlists that spotify api can retrieve at a time
 		playlists = sp.user_playlists(user=username, limit=50, offset=offset)
-		
+
 		# Add each playlist to the userPlaylists dictionary
 		for playlist in playlists['items']:
 			userPlaylists[playlist["name"]]=playlist
@@ -149,14 +238,6 @@ def add_tracks(results,playlist):
 		songList.append(song)
 	return songList
 
-def checkForUser(request):
-	# AJAX call to check is user exists
-	email = request.GET.get('email', None)
-	data = {
-		'exist': User.objects.filter(email__iexact=email, is_staff=False).exists()
-	}
-	return JsonResponse(data)
-
 @login_required
 def submitshareplaylist(request,playlistAutoId=None):
 	if request.method == "POST":
@@ -202,38 +283,6 @@ def playlistDashboard(request):
 
 	return render(request, 'discovbeat/playlistDashboard.html', context=context_dict)
 
-# def generatePlaylist():
-# 	playlistAutoId = request.GET.get('playlistAutoId', None)
-# 	playlist = UserPlaylist.objects.get(playlistAutoId=playlistAutoId)
-# 	song = Song.objects.filter(playlist=playlist, rating=True)
-# 	songId
-# 	endpoint_url = "https://api.spotify.com/v1/recommendations?"
-# 	token = getUserSocialId(request.user)
-# 	user_id = getToken(request.user)
-
-# 	# OUR FILTERS
-# 	market="UK"
-# 	seed_genres="indie"
-# 	target_danceability=0.9
-# 	uris = [] 
-# 	seed_artists = '0XNa1vTidXlvJ2gHSsRi4A'
-# 	seed_tracks='55SfSsxneljXOk5S3NVZIW'
-
-# 	# PERFORM THE QUERY
-# 	query = f'{endpoint_url}&market={market}&seed_genres={seed_genres}&target_danceability={target_danceability}'
-# 	query += f'&seed_artists={seed_artists}'
-# 	query += f'&seed_tracks={seed_tracks}'
-
-# 	response = requests.get(query, 
-# 				headers={"Content-Type":"application/json", 
-# 							"Authorization":f"Bearer {token}"})
-# 	json_response = response.json()
-
-# 	print('Recommended Songs:')
-# 	for i,j in enumerate(json_response['tracks']):
-# 				uris.append(j['uri'])
-# 				print(f"{i+1}) \"{j['name']}\" by {j['artists'][0]['name']}")
-
 @login_required
 def playlistAnalysis(request):
 	context_dict={}
@@ -250,31 +299,18 @@ def playlistAnalysis(request):
 def submitRatePlaylist(request):
 	return redirect(dashboard)
 
-def saveComment(request):
-	# AJAX call to save users song comment
+@login_required
+def deletePlaylist(request,playlistAutoId):
+	playlist = get_object_or_404(UserPlaylist, playlistAutoId=playlistAutoId)
+	playlist.delete()
+	return redirect(dashboard)
 
-	songId = request.GET.get('songAutoId', None)
-	comment = request.GET.get('comment', None)
-	song = Song.objects.get(songAutoId=songId)
-	song.comment=comment
-	song.save()
-	data = {
-		'songAutoId': songId,
-		'comment':comment
-	}
-	return JsonResponse(data)
+@login_required
+def settings(request):
+	return render(request,'discovbeat/settings.html')
 
-def saveLike(request):
-	# AJAX call to save users liked songs
-
-	songId = request.GET.get('songAutoId', None)
-	like = request.GET.get('like', None)
-	print(songId,like)
-	song = Song.objects.get(songAutoId=songId)
-	song.rating=like
-	song.save()
-	data = {
-		'songAutoId': songId,
-		'like':like
-	}
-	return JsonResponse(data)
+@login_required
+def deleteUser(request):
+	user=request.user
+	user.delete()
+	return redirect(index)
