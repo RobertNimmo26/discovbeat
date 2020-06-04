@@ -17,6 +17,7 @@
                             <form action="{% url 'playlistdashboard'%}" method="POST">
                                 {% csrf_token %}
                                 <select  class="custom-select" size="5" name="sharedToYouPlaylists" id="sharedToYouPlaylists" onchange="this.form.submit()">
+                                    <option disabled selected hidden><strong>Choose Playlist Shared to You:</strong></option>
                                     {% for playlist in sharedToYouPlaylists%}
                                         <option value="{{playlist.playlistAutoId}}" >{{playlist}} shared by {{playlist.owner.email}}</option>
                                     {%endfor%}
@@ -36,6 +37,7 @@
                             <form action="{% url 'playlistanalysis'%}" method="POST">
                                 {% csrf_token %}
                                 <select  class="custom-select" size="5" name="sharedPlaylists" id="sharedPlaylists" onchange="this.form.submit()">
+                                    <option disabled selected hidden><strong>Choose Shared Playlist:</strong></option>
                                     {% for playlist in sharedPlaylists%}
                                         <option value="{{playlist.playlistAutoId}}" >{{playlist}} shared to {{playlist.sharedUser.email}}</option>
                                     {%endfor%}
@@ -58,6 +60,7 @@
                         <form action="{% url 'shareplaylist'%}" method="POST">
                             {% csrf_token %}
                             <select  class="custom-select" size="10" name="playlist" id="playlist" onchange="this.form.submit()">
+                                <option disabled selected hidden><strong>Choose Playlist:</strong></option>
                                 {% for key,value in userPlaylists.items %}
                                     <option value="{{value}}" >{{key}}</option>
                                 {% endfor %}
@@ -79,4 +82,9 @@
             </div>
         </div>
     </div>
+    <script>
+        if(!!window.performance && window.performance.navigation.type == 2){
+            window.location.reload();
+        }
+    </script>
 {% endblock %}
