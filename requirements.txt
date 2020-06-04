@@ -14,8 +14,10 @@ constantly==15.1.0
 cryptography==2.9
 daphne==2.4.1
 defusedxml==0.6.0
+dj-database-url==0.5.0
 Django==3.0.5
 django-appconf==1.0.4
+django-heroku==0.3.1
 get==2019.4.13
 gunicorn==20.0.4
 hyperlink==19.0.0
@@ -27,6 +29,7 @@ mccabe==0.6.1
 numpy==1.18.1
 oauthlib==3.1.0
 post==2019.4.13
+psycopg2==2.8.5
 public==2019.4.13
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
@@ -55,5 +58,6 @@ Twisted==20.3.0
 txaio==20.4.1
 urllib3==1.25.8
 virtualenv==16.7.9
+whitenoise==5.1.0
 wrapt==1.11.2
 zope.interface==4.7.1

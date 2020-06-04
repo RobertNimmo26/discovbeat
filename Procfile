@@ -1,1 +1,1 @@
-web: gunicorn discovbeat.wsgi --log-file -
+web: gunicorn discovbeat_project.wsgi --log-file -
