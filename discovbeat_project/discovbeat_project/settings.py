@@ -91,7 +91,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'discovbeat$production',
         'USER': 'discovbeat',
-        'PASSWORD': 'darwin26',
+        'PASSWORD': os.getenv("DBPASSWORD"),
         'HOST': 'discovbeat.mysql.pythonanywhere-services.com',
     }
 }
