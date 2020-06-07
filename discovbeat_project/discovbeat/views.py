@@ -245,9 +245,10 @@ def add_tracks(results,playlist):
 	return songList
 
 @login_required
-def submitshareplaylist(request,playlistAutoId=None):
+def submitshareplaylist(request):
 	if request.method == "POST":
 		POST = request.POST.copy() 
+		playlistAutoId=(POST.pop("playlistAutoId"))[0]
 		playlist = UserPlaylist.objects.get(playlistAutoId=playlistAutoId)
 		usershare=POST.pop("usershare")
 		user=User.objects.get(email=usershare[0])
@@ -268,14 +269,19 @@ def submitshareplaylist(request,playlistAutoId=None):
 	return redirect(dashboard)
 
 @login_required
-def ratePlaylist(request,playlistAutoId):
+def ratePlaylist(request):
 	context_dict={}
-	playlist = get_object_or_404(UserPlaylist, playlistAutoId=playlistAutoId)
-	songList = Song.objects.filter(playlist=playlist)
-	context_dict['playlist']=playlist
-	context_dict['songList']=songList
+	if request.method == "POST":
+		playlistAutoId = request.POST.get("playlistAutoId", None)
+		playlist = get_object_or_404(UserPlaylist, playlistAutoId=playlistAutoId)
+		songList = Song.objects.filter(playlist=playlist)
+		context_dict['playlist']=playlist
+		context_dict['songList']=songList
 
-	return render(request, 'discovbeat/ratePlaylist.html', context=context_dict)
+		return render(request, 'discovbeat/ratePlaylist.html', context=context_dict)#
+	else:
+		return redirect(dashboard)
+
 
 @login_required
 def playlistDashboard(request):
@@ -306,9 +312,11 @@ def submitRatePlaylist(request):
 	return redirect(dashboard)
 
 @login_required
-def deletePlaylist(request,playlistAutoId):
-	playlist = get_object_or_404(UserPlaylist, playlistAutoId=playlistAutoId)
-	playlist.delete()
+def deletePlaylist(request):
+	if request.method == "POST":
+		playlistAutoId = request.POST.get("playlistAutoId", None)
+		playlist = get_object_or_404(UserPlaylist, playlistAutoId=playlistAutoId)
+		playlist.delete()
 	return redirect(dashboard)
 
 @login_required
