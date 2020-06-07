@@ -30,7 +30,11 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <a href="{% url 'deleteplaylist' playlist.playlistAutoId %}" class="btn btn-danger">Delete playlist</a>
+                                <form id="deleteplaylist" action="{% url 'deleteplaylist' %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="playlistAutoId" value={{playlist.playlistAutoId}}>
+                                    <button type="submit" class="btn btn-danger">Delete playlist</button>
+                                </form>
                             </div>
                         </div>
                     </div>

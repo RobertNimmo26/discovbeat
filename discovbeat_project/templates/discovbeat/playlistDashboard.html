@@ -31,7 +31,11 @@
                 <p>Feel free to change your comments and liked songs as much as you like. You will have to generate a new playlist to have the changes effected in your generated playlist.</p>
                 <div class="row">
                     <div class="col">
-                        <a href="{% url 'rateplaylist' playlist.playlistAutoId %}" class="btn btn-primary btn-lg">Rate the playlist</a>
+                        <form id="deleteplaylist" action="{% url 'rateplaylist' %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="playlistAutoId" value={{playlist.playlistAutoId}}>
+                            <button type="submit" class="btn btn-primary btn-lg">Rate the playlist</button>
+                        </form>
                     </div>
                     <div class="col">
                         <button type="button" class="btn btn-danger btn-lg" data-toggle="modal" data-target="#deleteAccount">
@@ -51,7 +55,11 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <a href="{% url 'deleteplaylist' playlist.playlistAutoId %}" class="btn btn-danger">Delete playlist</a>
+                                        <form id="deleteplaylist" action="{% url 'deleteplaylist' %}" method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="playlistAutoId" value={{playlist.playlistAutoId}}>
+                                            <button type="submit" class="btn btn-danger">Delete playlist</button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
