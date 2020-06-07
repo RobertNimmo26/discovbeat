@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,9 +28,9 @@ TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 SECRET_KEY = "ui$@zw#313!78i0)v8778jza#(51)nwgqyzcox9j60tl9mth7#"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['discovbeat.pythonanywhere.com']
+ALLOWED_HOSTS = ['discovbeat.pythonanywhere.com', '127.0.0.1']
 
 
 # Application definition

@@ -10,8 +10,9 @@
     <div class="container mt-5">
         <h2>{{playlist.name}}</h2>
         <br>
-        <form action="{% url 'submitshareplaylist' playlist.playlistAutoId %}" method="post">
+        <form action="{% url 'submitshareplaylist'%}" method="post">
             {% csrf_token %}
+            <input type="hidden" name="playlistAutoId" value={{playlist.playlistAutoId}}>
             <div class="form-row">
                 <div class="form-group col-md-5 ">
                     <a href="https://open.spotify.com/playlist/{{playlist.playlistId}}">Spotify playlist link</a>
