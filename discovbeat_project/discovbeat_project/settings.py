@@ -93,6 +93,9 @@ DATABASES = {
         'USER': 'discovbeat',
         'PASSWORD': os.getenv("DBPASSWORD"),
         'HOST': 'discovbeat.mysql.pythonanywhere-services.com',
+        'OPTIONS': {
+            'charset': 'utf8mb4'
+        }
     }
 }
 
