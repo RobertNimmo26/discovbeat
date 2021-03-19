@@ -2,7 +2,7 @@
 ## What is it?
 Discovbeat is a new way to share the music you love with your friends. For too long Spotify social features have been lacking. Discovbeat is here to change that by our new way to share playlists to your friends with your own personal touch! Our mission is to allow more people to discover new music through sharing!
 
-## Instalation instructions
+## Installation instructions
 1. Create your virtual environment using your preferred way with the python version 3.8.1
     
 2.  Activate your virtual environment
